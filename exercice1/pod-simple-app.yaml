@@ -1,0 +1,50 @@
+---
+# Créer et déployer un pod Kubernetes exécutant une application web simple.
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: simple-web-pod
+  labels:
+    name: simple-web-pod
+spec:
+  containers:
+  - name: nginx-container-for-simple-web-pod
+    image: nginx:latest
+    ports:
+    - containerPort: 80
+
+
+
+# pods forwarding 
+# apiVersion: v1
+# kind: Service
+# type:
+# metadata:
+#   labels:
+#     name: app1
+#   name: app1
+# spec:
+#   ports:
+#   # - name: "80"
+#   - protocol: TCP
+#     port: 8888
+#     targetPort: 80
+#   selector:
+#     name: simple-web-pod
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-service
+spec:
+  selector:
+    name: simple-web-pod
+  ports:
+    - protocol: TCP
+      port: 80      # Port accessible par le service
+      targetPort: 80 # Port où tourne l'application web dans les pods
+      nodePort: 30007 # Port exposé sur chaque nœud
+  type: NodePort
