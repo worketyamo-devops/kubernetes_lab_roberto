@@ -1,1 +1,23 @@
-#   Mise en place d'un ReplicaSet
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: roberto-replicaset
+  labels:
+    type: replicaset
+
+spec:
+  # modify replicas according to your case
+  replicas: 3
+  selector:
+    matchLabels:
+      name: simple-web-pod
+  template:
+    metadata:
+      labels:
+        name: simple-web-pod
+        app: web
+        env: production
+    spec:
+      containers:
+      - name: roberto-container 
+        image: nginx:latest
