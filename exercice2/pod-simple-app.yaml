@@ -1,0 +1,31 @@
+# Utilisation des Labels et Sélecteurs
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: simple-web-pod
+  labels:
+    name: simple-web-pod
+    app: web
+    env: dev
+spec:
+  containers:
+  - name: nginx-container-for-simple-web-pod
+    image: nginx:latest
+    ports:
+    - containerPort: 80
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-service
+spec:
+  selector:
+    name: simple-web-pod
+  ports:
+    - protocol: TCP
+      port: 80      # Port accessible par le service
+      targetPort: 80 # Port où tourne l'application web dans les pods
+      nodePort: 30007 # Port exposé sur chaque nœud
+  type: NodePort
