@@ -1,0 +1,62 @@
+# multi container pod
+# apiVersion: v1
+# kind: Pod
+# metadata:
+#   name: web-with-logger
+# spec:
+#   containers:
+#   - name: web container
+#     image: nginx:latest
+#     ports:
+#     - containerPort: 80
+
+#   - name: logs container
+#     image: busybox:latest
+
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: web-with-logger
+  labels:
+    type: pod_with_2_conatainers
+spec:
+  containers:
+  - name: nginx
+    image: nginx:latest
+    ports:
+    - containerPort: 80
+    volumeMounts:
+    - name: shared-logs
+      mountPath: /var/log/nginx
+  - name: busybox
+    image: busybox:latest
+    command: ["sh", "-c", "tail -f /var/log/nginx/access.log"]
+    volumeMounts:
+    - name: shared-logs
+      mountPath: /var/log/nginx
+  volumes:
+  - name: shared-logs
+    emptyDir: {}
+
+
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-service-multicontainer
+spec:
+  selector:
+    type: pod_with_2_conatainers
+  ports:
+    - nodePort: 32000
+      protocol: TCP
+      port: 80
+      targetPort: 80
+  type: NodePort
+
+
+
