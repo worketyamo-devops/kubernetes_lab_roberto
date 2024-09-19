@@ -1,0 +1,50 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: roberto-deployment
+  labels:
+    app: roberto
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: roberto
+  template:
+    metadata:
+      labels:
+        app: roberto
+    spec:
+      containers:
+      - name: roberto
+        image: nginx:latest
+        ports:
+        - containerPort: 80
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 2
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-service
+spec:
+  selector:
+    app: roberto  
+  ports:
+    - nodePort: 32766
+      protocol: TCP
+      port: 80
+      targetPort: 80
+  type: NodePort
+
+
+
+
+  
+
+
+
